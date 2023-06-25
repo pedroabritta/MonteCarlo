@@ -96,7 +96,8 @@ void MC_run::update_pos(int direction){
     }
 }
 
-double MC_run::Worker(){
+//double MC_run::Worker(){
+void MC_run::Worker(){
     get_holes();
     int fall_count;
     double total_falls = 0.0;
@@ -114,5 +115,5 @@ double MC_run::Worker(){
         total_falls += fall_count;
     }
     cout << "Thread " << m_thread_number << " had total of " << total_falls << " falls\n";
-    return total_falls;
+    //return total_falls;
 }

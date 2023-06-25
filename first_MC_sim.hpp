@@ -19,7 +19,8 @@ class MC_run {
         MC_run(int N, int n, int radius, int hole_count, int thread_number);
 
         //public functions
-        double Worker();
+        //double Worker();
+        void Worker();
 
     private:
         //constructor populated variables
