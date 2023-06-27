@@ -26,10 +26,9 @@ int main(int argc, char* argv[])
     }
 
     //parallelization variables
-    std::vector<std::thread> threads;
+    std::vector< std::thread > threads;
     vector < MC_run > runs;
-    //double final_probability = 0.0; //can be made vector
-    //vector < double > final_probability;
+    vector < double > final_probability(thread_count);
     int N_prime;
     bool set_up = true;
     while(set_up){
@@ -45,27 +44,24 @@ int main(int argc, char* argv[])
     cout << "Performing MC simulation for " << N << " samples\n";
     
     for (int i = 0; i < thread_count; ++i) {
-        runs.emplace_back(N_prime, n, radius, hole_count, i);
+            runs.emplace_back(N_prime, n, radius, hole_count, i);
     }
 
-    for (auto& obj : runs) {
-        threads.emplace_back([&obj]() { obj.Worker(); });
+    for (size_t i = 0; i < runs.size(); ++i) {
+            threads.emplace_back([&runs, &final_probability, i]() { final_probability[i] = runs[i].Worker(); });
     }
-    //for (size_t i = 0; i < runs.size(); ++i) {
-    //    threads.emplace_back([&runs, &final_probability, i]() {
-        //std::lock_guard<std::mutex> lock(mtx);
-    //    final_probability[i] += runs[i].Worker();
-    //});
-  //}
 
     // Join the threads
     for (auto& thread : threads) {
         thread.join();
     }
-    double value;
-    //for (int i = 0; i < thread_count; i++) value += final_probability[i]/(N*n);
-
-    //cout << "Probability of finding a hole: " << value << "\n";
+    cout << "\n\n";
+    double value = 0.0;
+    for (int i = 0; i < final_probability.size(); i++) {
+        value += 100.0*final_probability[i]/(N_prime*n);
+        cout << "Sample " << i << " had "  << final_probability[i] << " falls\n";
+    }
+    cout << "\n\nProbability of finding a hole: " << value << " percent\n";
     auto finish = chrono::high_resolution_clock::now();
     auto duration = chrono::duration_cast<std::chrono::microseconds>(finish - start).count();
     float exec_time = float(duration)/1000000.0;
