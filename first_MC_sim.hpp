@@ -20,6 +20,7 @@ class MC_run {
 
         //public functions
         double Worker();
+        //void Worker();
 
     private:
         //constructor populated variables
@@ -32,6 +33,8 @@ class MC_run {
         int m_thread_number;
         pair<int,int> m_position;
         vector < pair <int, int> > m_holes;
+        double m_total_falls = 0.0;
+        //std::mutex resultMutex;
 
         //functions
         bool in_hole();

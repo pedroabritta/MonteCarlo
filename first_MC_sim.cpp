@@ -8,7 +8,7 @@ MC_run::MC_run(int N, int n, int radius, int hole_count, int thread_number){
             m_radius = radius;
             m_position = make_pair(0,0); //always start at initial position
             m_hole_count = hole_count;
-            m_thread_number = thread_number;
+            m_thread_number = thread_number + 1;
             m_holes.resize(hole_count);
         }
 
@@ -96,11 +96,11 @@ void MC_run::update_pos(int direction){
     }
 }
 
+//double MC_run::Worker(){
 double MC_run::Worker(){
     get_holes();
-    int fall_count;
-    double total_falls = 0.0;
-    for (int i = 0; i < m_N; i++){ //can divide this into several threads
+    double fall_count;
+    for (int i = 0; i < m_N; i++){ 
         fall_count = 0;
         for (int j = 0; j < m_n; j++){
             //update position
@@ -111,8 +111,10 @@ double MC_run::Worker(){
                 //should we reset position to initial pos? 
             }
         }
-        total_falls += fall_count;
+        m_total_falls += fall_count;
+        if (i%10==0) cout << "Sample " << i << " on thread " << m_thread_number << " had total of " << fall_count << " falls\n";
+        //return fall_count;
     }
-    cout << "Thread " << m_thread_number << " had total of " << total_falls << " falls\n";
-    return total_falls;
+    //std::lock_guard<std::mutex> lock(resultMutex);
+    return m_total_falls;
 }
