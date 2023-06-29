@@ -97,7 +97,7 @@ void MC_run::update_pos(int direction){
 }
 
 //double MC_run::Worker(){
-double MC_run::Worker(){
+vector < double >  MC_run::Worker(){
     get_holes();
     double fall_count;
     for (int i = 0; i < m_N; i++){ 
@@ -111,10 +111,10 @@ double MC_run::Worker(){
                 //should we reset position to initial pos? 
             }
         }
-        m_total_falls += fall_count;
+        //std::lock_guard<std::mutex> lock(resultMutex);
+        falls.push_back(fall_count);
         if (i%10==0) cout << "Sample " << i << " on thread " << m_thread_number << " had total of " << fall_count << " falls\n";
         //return fall_count;
     }
-    //std::lock_guard<std::mutex> lock(resultMutex);
-    return m_total_falls;
+    return falls;
 }
